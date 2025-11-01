@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CivicConnect | Login & Signup</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            display: flex;
+            min-height: 100vh;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        /* Left Panel Styles */
+        #left-panel {
+            flex: 1;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header-content {
+            max-width: 500px;
+            z-index: 2;
+        }
+        
+        #left-panel h1 {
+            font-size: 42px;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        
+        #left-panel p {
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+        
+        .features {
+            margin-top: 30px;
+        }
+        
+        .feature {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .feature-icon {
+            background: rgba(255, 255, 255, 0.2);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+        }
+        
+        .feature-text {
+            font-size: 16px;
+        }
+        
+        .decoration {
+            position: absolute;
+            bottom: -50px;
+            right: -50px;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            z-index: 1;
+        }
+        
+        .decoration:nth-child(2) {
+            width: 200px;
+            height: 200px;
+            bottom: 100px;
+            right: 150px;
+        }
+
+        /* Right Panel Styles - Full Form */
+        #right-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 40px;
+            background: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #container {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 40px;
+            border-radius: 12px;
+            background-color: white;
+            text-align: center;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        h3 {
+            margin-bottom: 30px;
+            color: #6a11cb;
+            font-size: 32px;
+            font-weight: 600;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        .form-group {
+            width: 100%;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        input {
+            width: 100%;
+            padding: 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #6a11cb;
+            box-shadow: 0 0 0 2px rgba(106, 17, 203, 0.2);
+        }
+
+        button {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(106, 17, 203, 0.3);
+        }
+
+        .toggle-text {
+            margin-top: 25px;
+            color: #666;
+            font-size: 16px;
+        }
+
+        .toggle-text a {
+            text-decoration: none;
+            color: #6a11cb;
+            font-weight: 600;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .toggle-text a:hover {
+            color: #2575fc;
+            text-decoration: underline;
+        }
+
+        .back-button {
+            margin-top: 20px;
+        }
+        
+        .back-button a {
+            text-decoration: none;
+            color: #6a11cb;
+            font-weight: 600;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        
+        .back-button a:hover {
+            color: #2575fc;
+            text-decoration: underline;
+        }
+
+        .gender-container {
+            display: flex;
+            width: 100%;
+            margin: 10px 0;
+            justify-content: flex-start;
+            gap: 20px;
+        }
+        
+        .gender-container label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 16px;
+            color: #555;
+            cursor: pointer;
+            font-weight: normal;
+        }
+        
+        .gender-container input[type="radio"] {
+            width: auto;
+            margin-right: 0;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 900px) {
+            body {
+                flex-direction: column;
+            }
+            
+            #left-panel {
+                padding: 30px 20px;
+                text-align: center;
+            }
+            
+            #left-panel h1 {
+                font-size: 32px;
+            }
+            
+            .header-content {
+                max-width: 100%;
+            }
+            
+            #right-panel {
+                padding: 20px;
+            }
+            
+            #container {
+                padding: 30px 20px;
+                box-shadow: none;
+            }
+            
+            h3 {
+                font-size: 28px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #container {
+                padding: 20px 15px;
+            }
+            
+            h3 {
+                font-size: 24px;
+            }
+            
+            input {
+                padding: 14px;
+            }
+            
+            button {
+                padding: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Left Panel with Header Content -->
+    <div id="left-panel">
+        <div class="decoration"></div>
+        <div class="decoration"></div>
+        <div class="header-content">
+            <h1>Welcome to CivicConnect</h1>
+            <p>Empowering communities through connection, collaboration, and civic engagement. Join neighbors, local organizations, and government in building stronger communities together.</p>
+            
+            <div class="features">
+                <div class="feature">
+                    <div class="feature-icon">✓</div>
+                    <div class="feature-text">Connect with local organizations and initiatives</div>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">✓</div>
+                    <div class="feature-text">Participate in community events and discussions</div>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">✓</div>
+                    <div class="feature-text">Stay informed about local initiatives and events</div>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">✓</div>
+                    <div class="feature-text">Collaborate on projects that improve your neighborhood</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Panel with Form -->
+    <div id="right-panel">
+        <div id="container">
+            <!-- Login Form -->
+            <div id="login-form">
+                <h3>Login to CivicConnect</h3>
+                <form action="">
+                    <div class="form-group">
+                        <label for="login-username">Username</label>
+                        <input type="text" id="login-username" placeholder="Enter your username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <input type="password" id="login-password" placeholder="Enter your password" required>
+                    </div>
+                    <button type="submit">Login</button>
+                </form>
+                <p class="toggle-text">Not a member? <a onclick="toggleForm()">Sign Up</a></p>
+                <p class="back-button">Want to go back? <a href="loginhome.html">Back to Home</a></p>
+            </div>
+
+            <!-- Signup Form -->
+            <div id="signup-form" class="hidden">
+                <h3>Join CivicConnect</h3>
+                <form action="">
+                    <div class="form-group">
+                        <label for="first-name">First Name</label>
+                        <input type="text" id="first-name" placeholder="Enter your first name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="last-name">Last Name</label>
+                        <input type="text" id="last-name" placeholder="Enter your last name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" placeholder="Enter your email" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Gender</label>
+                        <div class="gender-container">
+                            <label><input type="radio" name="gender" value="male" required> Male</label>
+                            <label><input type="radio" name="gender" value="female" required> Female</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" placeholder="Choose a username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" placeholder="Create a password" required>
+                    </div>
+                    <button type="submit">Create Account</button>
+                </form>
+                <p class="toggle-text">Already a member? <a onclick="toggleForm()">Login</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleForm() {
+            document.getElementById('login-form').classList.toggle('hidden');
+            document.getElementById('signup-form').classList.toggle('hidden');
+        }
+    </script>
+</body>
+</html>
