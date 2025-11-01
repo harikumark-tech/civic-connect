@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
@@ -703,10 +703,10 @@
             <h1>CivicConnect</h1>
         </div>
         <div class="user-info">
-            <div class="user-avatar">JS</div>
+            <div class="user-avatar" th:text="${userInitials}">JS</div>
             <div>
-                <div class="user-name">John Smith</div>
-                <div class="user-role">Community Member</div>
+                <div class="user-name" th:text="${username}">John Smith</div>
+                <div class="user-role" th:text="${role}">Community Member</div>
             </div>
         </div>
     </div>
@@ -737,68 +737,63 @@
             <div id="dashboard-view">
                 <!-- Welcome Section -->
                 <div class="welcome-section">
-                    <h2>Welcome back, John!</h2>
-                    <p>Here's what's happening in your surroundings today.</p>
+                    <h2 th:text="'Welcome back, ' + ${username} + '!'">Welcome back, John!</h2>
+                    <p th:text="${welcomeMessage}">Here's what's happening in your surroundings today.</p>
                 </div>
 
                 <!-- Stats Cards -->
                 <div class="stats-container">
                     <div class="stat-card">
-                        <div class="stat-value">12</div>
+                        <div class="stat-value" th:text="${stats.totalComplaints}">12</div>
                         <div class="stat-label">Total Complaints</div>
                         <div class="stat-icon">📋</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-value">5</div>
+                        <div class="stat-value" th:text="${stats.pending}">5</div>
                         <div class="stat-label">Pending Resolution</div>
                         <div class="stat-icon">⏳</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-value">7</div>
+                        <div class="stat-value" th:text="${stats.resolved}">7</div>
                         <div class="stat-label">Resolved Issues</div>
                         <div class="stat-icon">✅</div>
                     </div>
                 </div>
-
             </div>
 
             <!-- Complaint Form View -->
             <div id="complaint-form-view" class="hidden">
                 <div class="complaint-form-container">
                     <h3>Submit a New Complaint</h3>
-                    <form id="complaint-form">
+                    <form id="complaint-form" th:action="@{/complaints}" th:object="${complaintForm}" method="post" enctype="multipart/form-data">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
                         <div class="form-group">
                             <label for="complaint-title">Complaint Title</label>
-                            <input type="text" id="complaint-title" placeholder="Brief description of the issue"
-                                required>
+                            <input type="text" id="complaint-title" th:field="*{title}" placeholder="Brief description of the issue" required />
                         </div>
 
                         <div class="form-group">
                             <label for="complaint-description">Description</label>
-                            <textarea id="complaint-description"
-                                placeholder="Please provide detailed information about the issue..."
-                                required></textarea>
+                            <textarea id="complaint-description" th:field="*{description}" placeholder="Please provide detailed information about the issue..." required></textarea>
                         </div>
 
                         <div class="form-group">
                             <label for="complaint-category">Category</label>
-                            <select id="complaint-category" required>
-                                <option value="">Select a category</option>
-                                <option value="road">Road & Transportation</option>
-                                <option value="water">Water Supply</option>
-                                <option value="sanitation">Sanitation & Waste</option>
-                                <option value="electricity">Electricity</option>
-                                <option value="parks">Parks & Recreation</option>
-                                <option value="safety">Public Safety</option>
-                                <option value="other">Other</option>
+                            <select id="complaint-category" th:field="*{category}" required>
+                                <option th:value="" disabled selected>Select a category</option>
+                                <option th:each="cat : ${categories}"
+                                        th:value="${cat.value}"
+                                        th:text="${cat.name}">
+                                    Category
+                                </option>
                             </select>
                         </div>
 
                         <div class="form-group">
                             <label for="complaint-location">Location</label>
                             <div class="location-container">
-                                <input type="text" id="complaint-location" placeholder="Enter address or landmark"
-                                    required>
+                                <input type="text" id="complaint-location" th:field="*{location}" placeholder="Enter address or landmark" required />
                                 <button type="button" id="get-location-btn">Use Current Location</button>
                             </div>
                         </div>
@@ -806,7 +801,7 @@
                         <div class="form-group">
                             <label>Upload Image or Document (Optional)</label>
                             <div class="file-upload">
-                                <input type="file" id="complaint-file" accept="image/*,.pdf,.doc,.docx">
+                                <input type="file" id="complaint-file" th:field="*{attachment}" accept="image/*,.pdf,.doc,.docx" />
                                 <label for="complaint-file" class="file-upload-label">
                                     <i>📎</i> Click to attach files (Max: 5MB)
                                 </label>
@@ -816,10 +811,10 @@
                         <button type="submit">Submit Complaint</button>
                     </form>
 
-                    <div id="submission-success" class="hidden">
+                    <div id="submission-success" class="hidden" th:if="${complaintSubmitted}">
                         <div class="complaint-id">
                             <h4>Your Complaint ID</h4>
-                            <div class="complaint-id-code" id="complaint-id-display">CC-2023-001234</div>
+                            <div class="complaint-id-code" id="complaint-id-display" th:text="${complaintId}">CC-2023-001234</div>
                             <p>Save this ID to track your complaint status</p>
                         </div>
 
@@ -837,127 +832,56 @@
                 <div class="status-container">
                     <h3>Complaint Status</h3>
 
-                    <div class="complaint-status-card">
+                    <div class="complaint-status-card" th:each="complaint : ${complaints}">
                         <div class="complaint-header">
                             <div>
-                                <div class="complaint-title">Pothole on Main Street</div>
-                                <div class="complaint-id-small">ID: CC-2023-001234</div>
+                                <div class="complaint-title" th:text="${complaint.title}">Pothole on Main Street</div>
+                                <div class="complaint-id-small" th:text="'ID: ' + ${complaint.id}">ID: CC-2023-001234</div>
                             </div>
-                            <div class="status-badge status-inprogress">In Progress</div>
+                            <div class="status-badge"
+                                 th:classappend="' status-' + ${complaint.status.toLowerCase()}"
+                                 th:text="${complaint.status}">In Progress</div>
                         </div>
 
                         <div class="complaint-details">
                             <div class="complaint-detail">
                                 <div class="detail-label">Category</div>
-                                <div class="detail-value">Road & Transportation</div>
+                                <div class="detail-value" th:text="${complaint.category}">Road & Transportation</div>
                             </div>
                             <div class="complaint-detail">
                                 <div class="detail-label">Location</div>
-                                <div class="detail-value">Main Street & 5th Avenue</div>
+                                <div class="detail-value" th:text="${complaint.location}">Main Street</div>
                             </div>
                             <div class="complaint-detail">
                                 <div class="detail-label">Submitted</div>
-                                <div class="detail-value">Oct 15, 2023</div>
+                                <div class="detail-value" th:text="${complaint.submittedDate}">Oct 15, 2023</div>
                             </div>
                             <div class="complaint-detail">
                                 <div class="detail-label">Assigned To</div>
-                                <div class="detail-value">Roads Department</div>
+                                <div class="detail-value" th:text="${complaint.assignedDepartment}">Roads Department</div>
                             </div>
                         </div>
 
                         <div class="status-timeline">
                             <div class="timeline-title">Status Timeline</div>
-                            <div class="timeline-item">
-                                <div class="timeline-date">Oct 15, 2023</div>
+                            <div class="timeline-item" th:each="event : ${complaint.timeline}">
+                                <div class="timeline-date" th:text="${event.date}">Oct 15, 2023</div>
                                 <div class="timeline-content">
-                                    <div class="timeline-action">Complaint Submitted</div>
-                                    <div class="timeline-desc">Your complaint has been received and is under review.
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="timeline-item">
-                                <div class="timeline-date">Oct 16, 2023</div>
-                                <div class="timeline-content">
-                                    <div class="timeline-action">Assigned to Department</div>
-                                    <div class="timeline-desc">The complaint has been assigned to the Roads Department
-                                        for resolution.</div>
-                                </div>
-                            </div>
-                            <div class="timeline-item">
-                                <div class="timeline-date">Oct 18, 2023</div>
-                                <div class="timeline-content">
-                                    <div class="timeline-action">Inspection Scheduled</div>
-                                    <div class="timeline-desc">A site inspection has been scheduled for October 20,
-                                        2023.</div>
+                                    <div class="timeline-action" th:text="${event.action}">Complaint Submitted</div>
+                                    <div class="timeline-desc" th:text="${event.description}">Complaint received and under review.</div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="complaint-status-card">
-                        <div class="complaint-header">
-                            <div>
-                                <div class="complaint-title">Street Light Outage</div>
-                                <div class="complaint-id-small">ID: CC-2023-001189</div>
-                            </div>
-                            <div class="status-badge status-resolved">Resolved</div>
-                        </div>
-
-                        <div class="complaint-details">
-                            <div class="complaint-detail">
-                                <div class="detail-label">Category</div>
-                                <div class="detail-value">Electricity</div>
-                            </div>
-                            <div class="complaint-detail">
-                                <div class="detail-label">Location</div>
-                                <div class="detail-value">Oak Street between 2nd and 3rd</div>
-                            </div>
-                            <div class="complaint-detail">
-                                <div class="detail-label">Submitted</div>
-                                <div class="detail-value">Oct 10, 2023</div>
-                            </div>
-                            <div class="complaint-detail">
-                                <div class="detail-label">Resolved On</div>
-                                <div class="detail-value">Oct 14, 2023</div>
-                            </div>
-                        </div>
-
-                        <div class="status-timeline">
-                            <div class="timeline-title">Status Timeline</div>
-                            <div class="timeline-item">
-                                <div class="timeline-date">Oct 10, 2023</div>
-                                <div class="timeline-content">
-                                    <div class="timeline-action">Complaint Submitted</div>
-                                    <div class="timeline-desc">Your complaint has been received and is under review.
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="timeline-item">
-                                <div class="timeline-date">Oct 11, 2023</div>
-                                <div class="timeline-content">
-                                    <div class="timeline-action">Assigned to Department</div>
-                                    <div class="timeline-desc">The complaint has been assigned to the Utilities
-                                        Department.</div>
-                                </div>
-                            </div>
-                            <div class="timeline-item">
-                                <div class="timeline-date">Oct 14, 2023</div>
-                                <div class="timeline-content">
-                                    <div class="timeline-action">Issue Resolved</div>
-                                    <div class="timeline-desc">The street light has been repaired and is now functioning
-                                        properly.</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
         document.addEventListener('DOMContentLoaded', function () {
-            // Navigation functionality
             const navItems = document.querySelectorAll('.nav-item');
             const actionCards = document.querySelectorAll('.action-card');
             const views = {
@@ -966,51 +890,35 @@
                 status: document.getElementById('status-view')
             };
 
-            // Show a specific view and hide others
             function showView(viewName) {
-                // Hide all views
-                Object.values(views).forEach(view => {
-                    if (view) view.classList.add('hidden');
-                });
+                Object.values(views).forEach(v => v.classList.add('hidden'));
+                if (views[viewName]) views[viewName].classList.remove('hidden');
 
-                // Show the selected view
-                if (views[viewName]) {
-                    views[viewName].classList.remove('hidden');
-                }
-
-                // Update active nav item
                 navItems.forEach(item => {
                     item.classList.remove('active');
-                    if (item.getAttribute('data-view') === viewName) {
-                        item.classList.add('active');
-                    }
+                    if (item.getAttribute('data-view') === viewName) item.classList.add('active');
                 });
             }
 
-            // Set up navigation item click handlers
             navItems.forEach(item => {
                 item.addEventListener('click', function () {
                     const viewName = this.getAttribute('data-view');
-                    if (viewName) {
-                        showView(viewName);
-                    }
+                    showView(viewName);
                 });
             });
 
-            // Set up action card click handlers
             actionCards.forEach(card => {
                 card.addEventListener('click', function () {
                     const viewName = this.getAttribute('data-view');
-                    if (viewName) {
-                        showView(viewName);
-                    }
+                    showView(viewName);
                 });
             });
 
-            // Initialize with dashboard view
             showView('dashboard');
         });
+        /*]]>*/
     </script>
 </body>
+
 
 </html>
