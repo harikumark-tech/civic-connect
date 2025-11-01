@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CivicConnect | Admin Dashboard</title>
+    <title>Admin - Complaints</title>
     <style>
         :root {
             --primary-color: #6a11cb;
@@ -499,7 +499,6 @@
 </head>
 
 <body>
-    <!-- Header -->
     <div class="header">
         <div class="logo">
             <div class="logo-icon">🏛️</div>
@@ -517,9 +516,7 @@
         </div>
     </div>
 
-    <!-- Main Container -->
     <div class="main-container">
-        <!-- Sidebar -->
         <div class="sidebar">
             <div class="nav-items">
                 <a th:href="@{/admin/dashboard}" href="#" class="nav-item active">
@@ -545,126 +542,81 @@
             </div>
         </div>
 
-        <!-- Content Area -->
         <div class="content">
-            <!-- Dashboard View -->
-            <div id="dashboard" class="section active">
-                <!-- Welcome Section -->
-                <div class="welcome-section">
-                    <h2 th:text="'Welcome back, ' + ${adminName} + '!'">Welcome back, Admin!</h2>
-                    <p th:text="${welcomeMessage}">Here's an overview of your platform administration.</p>
-                </div>
-
-                <!-- Stats Cards -->
-                <div class="stats-container">
-                    <div class="stat-card">
-                        <div class="stat-value" id="totalComplaints"
-                            th:text="${stats != null} ? ${stats.total} : '156'">156</div>
-                        <div class="stat-label">Total Complaints</div>
-                        <div class="stat-icon">📋</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="pendingComplaints"
-                            th:text="${stats != null} ? ${stats.pending} : '42'">42</div>
-                        <div class="stat-label">Pending Resolution</div>
-                        <div class="stat-icon">⏳</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="resolvedComplaints"
-                            th:text="${stats != null} ? ${stats.resolved} : '89'">89</div>
-                        <div class="stat-label">Resolved Issues</div>
-                        <div class="stat-icon">✅</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="totalUsers" th:text="${stats != null} ? ${stats.users} : '1,247'">
-                            1,247</div>
-                        <div class="stat-label">Registered Users</div>
-                        <div class="stat-icon">👥</div>
-                    </div>
-                </div>
-
-                <!-- Recent Complaints Section -->
-                <div class="admin-section">
-                    <h3 class="section-title">
-                        <span class="section-title-icon">📝</span>
-                        Recent Complaints
-                    </h3>
-                    <div class="table-container">
-                        <div class="table-header">
-                            <h3>Latest Complaints</h3>
-                            <div class="table-actions">
-                                <a href="#" class="btn btn-primary" onclick="showSection('complaints')">View All</a>
-                            </div>
-                        </div>
-                        <table class="complaints-table">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Title</th>
-                                    <th>Description</th>
-                                    <th>Category</th>
-                                    <th>Location</th>
-                                    <th>Picture</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody th:if="${recentComplaints != null}">
-                                <tr th:each="complaint : ${recentComplaints}">
-                                    <td th:text="${complaint.id}">CC-2023-001234</td>
-                                    <td th:text="${complaint.title}">Pothole on Main Street</td>
-                                    <td th:text="${complaint.description}">Large pothole causing traffic issues</td>
-                                    <td th:text="${complaint.category}">Road &amp; Transportation</td>
-                                    <td th:text="${complaint.location}">Main Street &amp; 5th Avenue</td>
-                                    <td><img th:src="${complaint.picture != null} ? @{${complaint.picture}} : @{https://via.placeholder.com/60}"
-                                            alt="Complaint Image" class="complaint-image" /></td>
-                                    <td>
-                                        <span
-                                            th:class="${complaint.status} == 'pending' ? 'status-badge status-pending' : (${complaint.status} == 'in_progress' ? 'status-badge status-inprogress' : 'status-badge status-resolved')"
-                                            th:text="${complaint.status}">pending</span>
-                                    </td>
-                                    <td>
-                                        <form th:action="@{/admin/complaints/{id}/status(id=${complaint.id})}"
-                                            method="post">
-                                            <input type="hidden" th:name="${_csrf.parameterName}"
-                                                th:value="${_csrf.token}" />
-                                            <select name="status">
-                                                <option value="pending" th:selected="${complaint.status == 'pending'}">
-                                                    Pending</option>
-                                                <option value="in_progress"
-                                                    th:selected="${complaint.status == 'in_progress'}">In Progress
-                                                </option>
-                                                <option value="resolved"
-                                                    th:selected="${complaint.status == 'resolved'}">Resolved</option>
-                                            </select>
-                                            <button type="submit" class="btn btn-primary btn-sm">Update</button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            </tbody>
-                            <tbody id="recentComplaintsBody" th:unless="${recentComplaints != null}">
-                                <!-- Recent complaints will be populated here -->
-                            </tbody>
-                        </table>
-                        <div class="pagination">
-                            <button class="page-btn active">1</button>
-                            <button class="page-btn">2</button>
-                            <button class="page-btn">3</button>
-                            <span>...</span>
-                            <button class="page-btn">10</button>
-                        </div>
-                    </div>
-                </div>
+            <div class="welcome-section">
+                <h2>Complaint Management</h2>
+                <p>View and manage all complaints submitted by users.</p>
             </div>
 
-
+            <div class="admin-section">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3>All Complaints</h3>
+                        <div class="table-actions">
+                            <input type="text" class="table-search" placeholder="Search complaints...">
+                            <select class="form-select" style="width:auto;" id="statusFilter">
+                                <option value="">All Statuses</option>
+                                <option value="pending">Pending</option>
+                                <option value="in_progress">In Progress</option>
+                                <option value="resolved">Resolved</option>
+                            </select>
+                        </div>
+                    </div>
+                    <table class="complaints-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Title</th>
+                                <th>Description</th>
+                                <th>Category</th>
+                                <th>Location</th>
+                                <th>Picture</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody th:if="${allComplaints != null}">
+                            <tr th:each="complaint : ${allComplaints}">
+                                <td th:text="${complaint.id}">CC-2023-001234</td>
+                                <td th:text="${complaint.title}">Pothole on Main Street</td>
+                                <td th:text="${complaint.description}">Large pothole causing traffic issues</td>
+                                <td th:text="${complaint.category}">Road &amp; Transportation</td>
+                                <td th:text="${complaint.location}">Main Street &amp; 5th Avenue</td>
+                                <td><img th:src="${complaint.picture != null} ? @{${complaint.picture}} : @{https://via.placeholder.com/60}"
+                                        alt="Complaint Image" class="complaint-image" /></td>
+                                <td>
+                                    <span
+                                        th:class="${complaint.status} == 'pending' ? 'status-badge status-pending' : (${complaint.status} == 'in_progress' ? 'status-badge status-inprogress' : 'status-badge status-resolved')"
+                                        th:text="${complaint.status}">pending</span>
+                                </td>
+                                <td>
+                                    <form th:action="@{/admin/complaints/{id}/status(id=${complaint.id})}"
+                                        method="post">
+                                        <input type="hidden" th:name="${_csrf.parameterName}"
+                                            th:value="${_csrf.token}" />
+                                        <select name="status">
+                                            <option value="pending" th:selected="${complaint.status == 'pending'}">
+                                                Pending</option>
+                                            <option value="in_progress"
+                                                th:selected="${complaint.status == 'in_progress'}">In Progress</option>
+                                            <option value="resolved" th:selected="${complaint.status == 'resolved'}">
+                                                Resolved</option>
+                                        </select>
+                                        <button type="submit" class="btn">Update</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tbody th:unless="${allComplaints != null}">
+                            <tr>
+                                <td colspan="8">No complaints found.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
-
-    <script>
-        
-    </script>
-
 </body>
 
 </html>

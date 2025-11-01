@@ -765,26 +765,28 @@
             <div id="complaint-form-view" class="hidden">
                 <div class="complaint-form-container">
                     <h3>Submit a New Complaint</h3>
-                    <form id="complaint-form" th:action="@{/complaints}" th:object="${complaintForm}" method="post" enctype="multipart/form-data">
+                    <form id="complaint-form" th:action="@{/complaints}" th:object="${complaintForm}" method="post"
+                        enctype="multipart/form-data">
                         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
                         <div class="form-group">
                             <label for="complaint-title">Complaint Title</label>
-                            <input type="text" id="complaint-title" th:field="*{title}" placeholder="Brief description of the issue" required />
+                            <input type="text" id="complaint-title" th:field="*{title}"
+                                placeholder="Brief description of the issue" required />
                         </div>
 
                         <div class="form-group">
                             <label for="complaint-description">Description</label>
-                            <textarea id="complaint-description" th:field="*{description}" placeholder="Please provide detailed information about the issue..." required></textarea>
+                            <textarea id="complaint-description" th:field="*{description}"
+                                placeholder="Please provide detailed information about the issue..."
+                                required></textarea>
                         </div>
 
                         <div class="form-group">
                             <label for="complaint-category">Category</label>
                             <select id="complaint-category" th:field="*{category}" required>
                                 <option th:value="" disabled selected>Select a category</option>
-                                <option th:each="cat : ${categories}"
-                                        th:value="${cat.value}"
-                                        th:text="${cat.name}">
+                                <option th:each="cat : ${categories}" th:value="${cat.value}" th:text="${cat.name}">
                                     Category
                                 </option>
                             </select>
@@ -793,7 +795,8 @@
                         <div class="form-group">
                             <label for="complaint-location">Location</label>
                             <div class="location-container">
-                                <input type="text" id="complaint-location" th:field="*{location}" placeholder="Enter address or landmark" required />
+                                <input type="text" id="complaint-location" th:field="*{location}"
+                                    placeholder="Enter address or landmark" required />
                                 <button type="button" id="get-location-btn">Use Current Location</button>
                             </div>
                         </div>
@@ -801,7 +804,8 @@
                         <div class="form-group">
                             <label>Upload Image or Document (Optional)</label>
                             <div class="file-upload">
-                                <input type="file" id="complaint-file" th:field="*{attachment}" accept="image/*,.pdf,.doc,.docx" />
+                                <input type="file" id="complaint-file" th:field="*{attachment}"
+                                    accept="image/*,.pdf,.doc,.docx" />
                                 <label for="complaint-file" class="file-upload-label">
                                     <i>📎</i> Click to attach files (Max: 5MB)
                                 </label>
@@ -814,7 +818,8 @@
                     <div id="submission-success" class="hidden" th:if="${complaintSubmitted}">
                         <div class="complaint-id">
                             <h4>Your Complaint ID</h4>
-                            <div class="complaint-id-code" id="complaint-id-display" th:text="${complaintId}">CC-2023-001234</div>
+                            <div class="complaint-id-code" id="complaint-id-display" th:text="${complaintId}">
+                                CC-2023-001234</div>
                             <p>Save this ID to track your complaint status</p>
                         </div>
 
@@ -836,11 +841,11 @@
                         <div class="complaint-header">
                             <div>
                                 <div class="complaint-title" th:text="${complaint.title}">Pothole on Main Street</div>
-                                <div class="complaint-id-small" th:text="'ID: ' + ${complaint.id}">ID: CC-2023-001234</div>
+                                <div class="complaint-id-small" th:text="'ID: ' + ${complaint.id}">ID: CC-2023-001234
+                                </div>
                             </div>
-                            <div class="status-badge"
-                                 th:classappend="' status-' + ${complaint.status.toLowerCase()}"
-                                 th:text="${complaint.status}">In Progress</div>
+                            <div class="status-badge" th:classappend="' status-' + ${complaint.status.toLowerCase()}"
+                                th:text="${complaint.status}">In Progress</div>
                         </div>
 
                         <div class="complaint-details">
@@ -858,7 +863,8 @@
                             </div>
                             <div class="complaint-detail">
                                 <div class="detail-label">Assigned To</div>
-                                <div class="detail-value" th:text="${complaint.assignedDepartment}">Roads Department</div>
+                                <div class="detail-value" th:text="${complaint.assignedDepartment}">Roads Department
+                                </div>
                             </div>
                         </div>
 
@@ -868,7 +874,8 @@
                                 <div class="timeline-date" th:text="${event.date}">Oct 15, 2023</div>
                                 <div class="timeline-content">
                                     <div class="timeline-action" th:text="${event.action}">Complaint Submitted</div>
-                                    <div class="timeline-desc" th:text="${event.description}">Complaint received and under review.</div>
+                                    <div class="timeline-desc" th:text="${event.description}">Complaint received and
+                                        under review.</div>
                                 </div>
                             </div>
                         </div>
